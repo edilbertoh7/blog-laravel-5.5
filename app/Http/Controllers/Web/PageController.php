@@ -24,6 +24,18 @@ class PageController extends Controller
     	return view('web.posts',compact('posts'));
 
     }
+        public function tag($slug)
+    {
+    	/*listar todos los posts que tengan etiquetas solo cuando la etiqueta sea igual
+    	al slug que se recibe como parametro*/
+    	$posts = Post::whereHas('tags',function ($query)use($slug)
+    	{
+    		$query->where('slug',$slug);
+    	})
+    	->orderBy('id','DESC')->where('status','PUBLISHED')->paginate(3);
+    	return view('web.posts',compact('posts'));
+
+    }
 
     public function post($slug)
     {
