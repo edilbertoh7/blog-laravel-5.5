@@ -21,7 +21,7 @@ class TagController extends Controller
      */
     public function index()
     {
-        $tags = Tag:: orderBy('id','DESC')->paginate();
+        $tags = Tag:: orderBy('id','ASC')->paginate();
         return view('admin.tags.index',compact('tags'));
     }
 
@@ -98,6 +98,6 @@ class TagController extends Controller
     public function destroy($id)
     {
        $tag = Tag::find($id)->delete();
-       return back()->with('info','la etiqueta $tag  se ha eliminado correctamente');
+       return back()->with('info','la etiqueta  se ha eliminado correctamente');
     }
 }

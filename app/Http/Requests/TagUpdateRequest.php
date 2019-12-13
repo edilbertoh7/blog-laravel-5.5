@@ -25,7 +25,10 @@ class TagUpdateRequest extends FormRequest
     {
         return [
             'name'=>'required',
-            'slug'=>'required|unique:tags,slug',
+            /*al  colocarle .$this->tag, al final de la linea se evita que se genere un error 
+            cuando se este editando la etiquet ya que se verificara que no se repitan las etiquetas 
+            pero se omitira la que se encuentre en edicion en ese preciso instante*/
+            'slug'=>'required|unique:tags,slug,'.$this->tag,
         ];
     }
 }
