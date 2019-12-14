@@ -23,12 +23,20 @@ class PostUpdateRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'name'=>'required',
-            /*al  colocarle .$this->tag, al final de la linea se evita que se genere un error 
-            cuando se este editando la etiquet ya que se verificara que no se repitan las etiquetas 
-            pero se omitira la que se encuentre en edicion en ese preciso instante*/
-            'slug'=>'required|unique:posts,slug,'.$this->post,
+            'slug'=>'required|unique:posts,slug,'. $this->post,
+            'user_id'=>'required|integer',
+            'category_id'=>'required|integer',
+            'tags'=>'required|array',
+            'body'=>'required',
+            'status'=>'required|in:DRAFT,PUBLISHED',
         ];
+        /*si se agrega una imagen validar que cumpla con el formato definido
+        y agreagar despues del arreglo anterior*/
+        if ($this->get('file')) 
+            $rules=array_merge($rules,['file'=>'mimes:jpg,jpeg,png']);
+            return $rules;
+        
     }
 }

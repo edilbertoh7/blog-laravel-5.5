@@ -9,7 +9,7 @@
 					</div>
 
 				<div class="panel-body">
-				{!! form::open(['route'=>'posts.store']) !!}
+				{!! form::open(['route'=>'posts.store','files'=>true]) !!}
 				@include('admin.posts.partials.form')
 				{!! form::close() !!}
 				</div>

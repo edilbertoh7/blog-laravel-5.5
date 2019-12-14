@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
+//funcionalidad para guardar archivos 'en este caso imagenes'
+use Illuminate\Support\Facades\Storage;
+
 use App\Http\Controllers\Controller;
 use App\Post;
 use App\Category;
@@ -52,7 +55,17 @@ class PostController extends Controller
      */
     public function store(PostStoreRequest $request)
     {
+
+
         $post = Post::create($request->all());
+       /*si se envia un a imagen desde el campo file guardar en la
+       carpeta public en la carpeta image con el nombre que trae el archivo */
+        if($request->file('file')){
+            $path = Storage::disk('public')->put('image',$request->file('file'));
+            $post->fill(['file'=>asset($path)])->save();
+        }
+       /* si existe relacion con un a etiqueta se sincronizara correctamente */
+       $post->tags()->attach($request->get('tags'));
         return redirect()->route('posts.edit',$post->id)
         ->with('info','Entrada creada con exito');
     }
@@ -66,6 +79,12 @@ class PostController extends Controller
     public function show($id)
     {
        $post = Post::find($id);
+       /*se usa el metodo authorize 7 y se pasa como argumento la funccion pass
+        creada en el archivo PostPolicy para evitar que se acceda a posts que no 
+        le pertenezcan  al usuario*/
+        $this->authorize('pass',$post);
+        /*esta autorizacio se debe dar de alta en el archivo AuthServiceProvider par 
+        que funcione correctamente*/
        return view('admin.posts.show',compact('post'));
     }
 
@@ -77,9 +96,15 @@ class PostController extends Controller
      */
     public function edit($id)
     {
+        $post = Post::find($id);
+        /*se usa el metodo authorize 7 y se pasa como argumento la funccion pass
+        creada en el archivo PostPolicy para evitar que se acceda a posts que no 
+        le pertenezcan  al usuario*/
+        $this->authorize('pass',$post);
+        /*esta autorizacio se debe dar de alta en el archivo AuthServiceProvider par 
+        que funcione correctamente*/
           $categories = Category::orderBy('name','ASC')->pluck('name','id');
         $tags       = Tag::orderBy('name','ASC')->get();
-        $post = Post::find($id);
        return view('admin.posts.edit',compact('post','categories','tags'));
     }
 
@@ -93,8 +118,23 @@ class PostController extends Controller
     public function update(PostUpdateRequest $request, $id)
     {
         $post = Post::find($id);
+        /*se usa el metodo authorize 7 y se pasa como argumento la funccion pass
+        creada en el archivo PostPolicy para evitar que se acceda a posts que no 
+        le pertenezcan  al usuario*/
+        $this->authorize('pass',$post);
+        /*esta autorizacio se debe dar de alta en el archivo AuthServiceProvider par 
+        que funcione correctamente*/
         $post->fill($request->all())->save();
 
+         /*si se envia un a imagen desde el campo file guardar en la
+       carpeta public en la carpeta image con el nombre que trae el archivo */
+        if($request->file('file')){
+            $path = Storage::disk('public')->put('image',$request->file('file'));
+            $post->fill(['file'=>asset($path)])->save();
+        }
+       /* si existe relacion con un a etiqueta se sincronizara correctamente */
+       $post->tags()->sync($request->get('tags'));
+    
           return redirect()->route('posts.edit',$post->id)
         ->with('info','Entrada actualizada con exito');
 
@@ -108,7 +148,14 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-       $post = Post::find($id)->delete();
+       $post = Post::find($id);
+       /*se usa el metodo authorize 7 y se pasa como argumento la funccion pass
+        creada en el archivo PostPolicy para evitar que se acceda a posts que no 
+        le pertenezcan  al usuario*/
+        $this->authorize('pass',$post);
+        /*esta autorizacio se debe dar de alta en el archivo AuthServiceProvider par 
+        que funcione correctamente*/
+        $post->delete();
        return back()->with('info','la Entrada  se ha eliminado correctamente');
     }
 }

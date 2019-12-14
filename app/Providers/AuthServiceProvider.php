@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Providers;
-
+use App\Post;
+use App\Policies\PostPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -13,7 +14,9 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
+        /*se especifica que la entidad pos esta realacionada con la politica 
+        que se creo y que esta siendo llamada en el controlador*/
+        Post::class => PostPolicy::class
     ];
 
     /**

@@ -6,14 +6,14 @@
 </div>
 <div class="form-group">
 	{{ form::label('name','Nombre de la etiqueta') }}
-	{{ form::text('name' ,null,['class'=>'form-control','id'=>'name', 'value'=>'4.50', 'required' => 'required']) }}
+	{{ form::text('name' ,null,['class'=>'form-control','id'=>'name', 'value'=>'4.50']) }}
 </div>
 <div class="form-group">
 	{{ form::label('slug','URL amigable') }}
 	{{ form::text('slug',null,['class'=>'form-control','id'=>'slug']) }}
 </div>
 <div class="form-group">
-	{{ form::label('file','Image') }}
+	{{ form::label('file','Imagen') }}
 	{{ form::file('file') }}
 </div>
 <div class="form-group">
